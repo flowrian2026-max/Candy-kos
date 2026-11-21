@@ -1,0 +1,6 @@
+{
+  "name": "پرشین پتال - بازی جورچین سالن ناخن",
+  "description": "بازی پازل جورچین سه تایی در دنیای جادویی سالن ناخن پرشین پتال با کارت‌های کلکسیونی، ارتقای سالن و معماری رقابت دو نفره.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
