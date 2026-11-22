@@ -1,20 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
-  Pause,
-  Volume2,
-  VolumeX,
-  Sparkles,
-  Shuffle,
-  Wand2,
-  Lightbulb,
-  RotateCcw,
-  ArrowRight,
-  Star,
-  Coins,
-  Check,
-  Play,
-} from 'lucide-react';
-import {
   applyGravityAndRefill,
   areAdjacent,
   clearSingleCellWithBooster,
@@ -42,6 +27,162 @@ import {
 import { NailPieceGraphic } from './NailPieces';
 import { CollectibleCardArt } from './CollectibleCardArt';
 
+type SalonBoardIconName =
+  | 'flower-brand'
+  | 'pause'
+  | 'sound-on'
+  | 'sound-off'
+  | 'star'
+  | 'check'
+  | 'nail-file'
+  | 'uv-brush'
+  | 'shuffle'
+  | 'hint'
+  | 'play'
+  | 'replay'
+  | 'back-map'
+  | 'coin'
+  | 'ribbon'
+  | 'frost-petal';
+
+const SalonBoardIcon: React.FC<{
+  name: SalonBoardIconName;
+  className?: string;
+  filled?: boolean;
+}> = ({ name, className = 'w-4 h-4', filled = false }) => {
+  switch (name) {
+    case 'flower-brand':
+      return (
+        <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+          <circle cx="12" cy="6.2" r="3.4" fill="#E8B4B8" stroke="#6B2D3C" strokeWidth="1.6" />
+          <circle cx="17.5" cy="10.2" r="3.4" fill="#E8B4B8" stroke="#6B2D3C" strokeWidth="1.6" />
+          <circle cx="15.4" cy="16.6" r="3.4" fill="#E8B4B8" stroke="#6B2D3C" strokeWidth="1.6" />
+          <circle cx="8.6" cy="16.6" r="3.4" fill="#E8B4B8" stroke="#6B2D3C" strokeWidth="1.6" />
+          <circle cx="6.5" cy="10.2" r="3.4" fill="#E8B4B8" stroke="#6B2D3C" strokeWidth="1.6" />
+          <circle cx="12" cy="12" r="3.2" fill="#F5EDE4" stroke="#6B2D3C" strokeWidth="1.6" />
+        </svg>
+      );
+    case 'pause':
+      return (
+        <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
+          <rect x="6.5" y="5" width="3.8" height="14" rx="1.5" fill="currentColor" fillOpacity="0.18" />
+          <rect x="13.7" y="5" width="3.8" height="14" rx="1.5" fill="currentColor" fillOpacity="0.18" />
+        </svg>
+      );
+    case 'sound-on':
+      return (
+        <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M5 9.5H8.5L13.5 5.5V18.5L8.5 14.5H5C4.2 14.5 3.5 13.8 3.5 13V11C3.5 10.2 4.2 9.5 5 9.5Z" fill="currentColor" fillOpacity="0.16" />
+          <path d="M16.5 9C17.6 10.2 17.6 13.8 16.5 15" />
+          <path d="M19.2 6.8C21.2 9.2 21.2 14.8 19.2 17.2" />
+        </svg>
+      );
+    case 'sound-off':
+      return (
+        <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M5 9.5H8.5L13.5 5.5V18.5L8.5 14.5H5C4.2 14.5 3.5 13.8 3.5 13V11C3.5 10.2 4.2 9.5 5 9.5Z" fill="currentColor" fillOpacity="0.12" />
+          <path d="M16.5 9.5L20.5 14.5" />
+          <path d="M20.5 9.5L16.5 14.5" />
+        </svg>
+      );
+    case 'star':
+      return (
+        <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+          <path
+            d="M12 3L14.8 8.6L21 9.5L16.5 13.9L17.6 20L12 17.1L6.4 20L7.5 13.9L3 9.5L9.2 8.6L12 3Z"
+            fill={filled ? '#B76E79' : '#F5EDE4'}
+            stroke="#6B2D3C"
+            strokeWidth="1.8"
+            strokeLinejoin="round"
+          />
+        </svg>
+      );
+    case 'check':
+      return (
+        <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M5 12.5L9.8 17L19 7.5" />
+        </svg>
+      );
+    case 'nail-file':
+      return (
+        <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M16.8 3.8C18.2 2.4 20.4 4.6 19 6L8.2 19.6C6.9 21.1 4.5 19.1 5.8 17.5L16.8 3.8Z" fill="#E8B4B8" fillOpacity="0.45" />
+          <path d="M10.5 11.5L13 13.5" />
+          <path d="M13 8.5L15.5 10.5" />
+        </svg>
+      );
+    case 'uv-brush':
+      return (
+        <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M14.5 5.5L18.5 9.5L9.5 18.5L5.5 18.5L5.5 14.5L14.5 5.5Z" fill="#B76E79" fillOpacity="0.3" />
+          <path d="M12.5 7.5L16.5 11.5" />
+          <path d="M18.5 3.5V5.5M20.5 5.5H18.5" />
+        </svg>
+      );
+    case 'shuffle':
+      return (
+        <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M4 8C8 8 10 16 14 16H19" />
+          <path d="M16.5 13.5L19.5 16L16.5 18.5" />
+          <path d="M4 16C8 16 10 8 14 8H19" />
+          <path d="M16.5 5.5L19.5 8L16.5 10.5" />
+        </svg>
+      );
+    case 'hint':
+      return (
+        <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M9 17H15M9.8 20H14.2M12 4C8.9 4 6.5 6.4 6.5 9.4C6.5 11.4 7.7 13.1 9 14.2V15.5H15V14.2C16.3 13.1 17.5 11.4 17.5 9.4C17.5 6.4 15.1 4 12 4Z" fill="#F5EDE4" />
+        </svg>
+      );
+    case 'play':
+      return (
+        <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+          <path d="M7 5.5L18.5 12L7 18.5V5.5Z" fill="currentColor" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+        </svg>
+      );
+    case 'replay':
+      return (
+        <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M4.5 12A7.5 7.5 0 1 0 6.8 6.6L4.5 8.8" />
+          <path d="M4.5 4.5V8.8H8.8" />
+        </svg>
+      );
+    case 'back-map':
+      return (
+        <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M5 12H19" />
+          <path d="M13 6L19 12L13 18" />
+        </svg>
+      );
+    case 'coin':
+      return (
+        <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+          <circle cx="12" cy="12" r="8.5" fill="#F5EDE4" stroke="#6B2D3C" strokeWidth="1.8" />
+          <circle cx="12" cy="12" r="4.5" fill="#E8B4B8" stroke="#B76E79" strokeWidth="1.4" />
+        </svg>
+      );
+    case 'ribbon':
+      return (
+        <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+          <path d="M12 12C9 8.5 5 9.5 6 12.5C6.8 14.8 9.6 14.2 12 12ZM12 12C15 8.5 19 9.5 18 12.5C17.2 14.8 14.4 14.2 12 12Z" fill="#E8B4B8" stroke="#6B2D3C" strokeWidth="1.6" />
+          <path d="M10.8 13.5L8 19M13.2 13.5L16 19" stroke="#6B2D3C" strokeWidth="1.6" strokeLinecap="round" />
+          <circle cx="12" cy="12" r="2.2" fill="#F5EDE4" stroke="#6B2D3C" strokeWidth="1.5" />
+        </svg>
+      );
+    case 'frost-petal':
+      return (
+        <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+          <circle cx="12" cy="7" r="3" fill="#F5EDE4" stroke="#6B2D3C" strokeWidth="1.5" />
+          <circle cx="16.8" cy="10.5" r="3" fill="#F5EDE4" stroke="#6B2D3C" strokeWidth="1.5" />
+          <circle cx="15" cy="16.2" r="3" fill="#F5EDE4" stroke="#6B2D3C" strokeWidth="1.5" />
+          <circle cx="9" cy="16.2" r="3" fill="#F5EDE4" stroke="#6B2D3C" strokeWidth="1.5" />
+          <circle cx="7.2" cy="10.5" r="3" fill="#F5EDE4" stroke="#6B2D3C" strokeWidth="1.5" />
+          <circle cx="12" cy="12" r="2.4" fill="#B76E79" />
+        </svg>
+      );
+  }
+};
+
 interface FloatingCallout {
   id: string;
   text: string;
@@ -54,6 +195,33 @@ interface SparkleBurst {
   row: number;
   col: number;
   color: string;
+  scale: number;
+}
+
+interface ButterflyFlightVisual {
+  id: string;
+  from: { row: number; col: number };
+  to: { row: number; col: number };
+  flyX: string;
+  flyY: string;
+}
+
+interface DropMotion {
+  dropY: string;
+  delayMs: number;
+  isSpawn: boolean;
+}
+
+interface SwapMotion {
+  swapX: string;
+  swapY: string;
+}
+
+interface InvalidNudge {
+  row: number;
+  col: number;
+  nudgeX: string;
+  nudgeY: string;
 }
 
 export interface LevelCompletionSummary {
@@ -86,13 +254,43 @@ interface MatchBoardViewProps {
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const COMBO_PRAISE_FA = ['خوش‌سلیقه!', 'درخشان!', 'عالی بود!', 'جادویی!', 'شاهکار پرشین!'];
+const PALETTE_PARTICLE_BY_TYPE: Record<PieceType, string> = {
+  'rose-polish': '#B76E79',
+  'lavender-gem': '#E8B4B8',
+  'pearl-blossom': '#F5EDE4',
+  'mint-card': '#A8C3A0',
+  'amber-serum': '#B76E79',
+  'berry-bow': '#6B2D3C',
+};
 
-const SPARKLE_VECTORS: Array<{ tx: string; ty: string }> = [
-  { tx: '-18px', ty: '-22px' },
-  { tx: '20px', ty: '-20px' },
-  { tx: '-20px', ty: '16px' },
-  { tx: '18px', ty: '18px' },
+const SPARKLE_VECTORS: Array<{ tx: string; ty: string; isStar?: boolean }> = [
+  { tx: '-22px', ty: '-24px', isStar: true },
+  { tx: '22px', ty: '-22px', isStar: true },
+  { tx: '-24px', ty: '16px' },
+  { tx: '23px', ty: '18px' },
+  { tx: '0px', ty: '-26px', isStar: true },
+  { tx: '0px', ty: '24px' },
+  { tx: '-25px', ty: '-4px' },
+  { tx: '25px', ty: '-4px' },
+];
+
+const BOMB_RING_VECTORS: Array<{ tx: string; ty: string; isStar: boolean }> = Array.from(
+  { length: 12 },
+  (_, i) => {
+    const angle = (i / 12) * Math.PI * 2;
+    const radius = i % 2 === 0 ? 54 : 42;
+    return {
+      tx: `${Math.round(Math.cos(angle) * radius)}px`,
+      ty: `${Math.round(Math.sin(angle) * radius)}px`,
+      isStar: i % 2 === 0,
+    };
+  }
+);
+
+const BUTTERFLY_TRAIL_STOPS = [
+  { tp: '0.25', delayMs: 30, sizeClass: 'w-2.5 h-2.5' },
+  { tp: '0.5', delayMs: 65, sizeClass: 'w-2 h-2' },
+  { tp: '0.75', delayMs: 100, sizeClass: 'w-1.5 h-1.5' },
 ];
 
 function buildInitialBoard(
@@ -111,7 +309,6 @@ function buildInitialBoard(
     level.lockedPattern ?? []
   );
 
-  // Apply Win Streak starting bonus specials (up to 2) in Saga mode
   if (!isBattleMode && winStreak > 0) {
     const bonusCount = Math.min(2, winStreak);
     const candidates: Array<{ row: number; col: number }> = [];
@@ -134,6 +331,11 @@ function buildInitialBoard(
   }
 
   return { board, rng };
+}
+
+function getIsRtl(): boolean {
+  if (typeof document === 'undefined') return true;
+  return getComputedStyle(document.documentElement).direction === 'rtl';
 }
 
 export const MatchBoardView: React.FC<MatchBoardViewProps> = ({
@@ -176,14 +378,24 @@ export const MatchBoardView: React.FC<MatchBoardViewProps> = ({
   const [selected, setSelected] = useState<{ row: number; col: number } | null>(null);
   const [isBusy, setIsBusy] = useState(false);
   const [activeBooster, setActiveBooster] = useState<BoosterType | null>(null);
+
+  // Animation States
   const [clearingKeys, setClearingKeys] = useState<Set<string>>(new Set());
+  const [spawnSpecialKeys, setSpawnSpecialKeys] = useState<Set<string>>(new Set());
+  const [dropMotions, setDropMotions] = useState<Record<string, DropMotion>>({});
+  const [swapMotions, setSwapMotions] = useState<Record<string, SwapMotion>>({});
+  const [invalidNudges, setInvalidNudges] = useState<InvalidNudge[]>([]);
   const [sparkles, setSparkles] = useState<SparkleBurst[]>([]);
   const [beamRows, setBeamRows] = useState<number[]>([]);
   const [beamCols, setBeamCols] = useState<number[]>([]);
   const [bombCenters, setBombCenters] = useState<Array<{ row: number; col: number }>>([]);
+  const [prismCenters, setPrismCenters] = useState<Array<{ row: number; col: number }>>([]);
+  const [butterflyFlights, setButterflyFlights] = useState<ButterflyFlightVisual[]>([]);
   const [butterflyTargetKeys, setButterflyTargetKeys] = useState<Set<string>>(new Set());
-  const [trayBump, setTrayBump] = useState(false);
+  const [trayBumpMode, setTrayBumpMode] = useState<'none' | 'soft' | 'strong'>('none');
+  const [comboGlowDepth, setComboGlowDepth] = useState(0);
   const [comboPraise, setComboPraise] = useState<string | null>(null);
+  const [isIntenseCombo, setIsIntenseCombo] = useState(false);
   const [callouts, setCallouts] = useState<FloatingCallout[]>([]);
   const [hintPair, setHintPair] = useState<[{ row: number; col: number }, { row: number; col: number }] | null>(null);
   const [shuffleNotice, setShuffleNotice] = useState(false);
@@ -226,13 +438,21 @@ export const MatchBoardView: React.FC<MatchBoardViewProps> = ({
     setIsBusy(false);
     setActiveBooster(null);
     setClearingKeys(new Set());
+    setSpawnSpecialKeys(new Set());
+    setDropMotions({});
+    setSwapMotions({});
+    setInvalidNudges([]);
     setSparkles([]);
     setBeamRows([]);
     setBeamCols([]);
     setBombCenters([]);
+    setPrismCenters([]);
+    setButterflyFlights([]);
     setButterflyTargetKeys(new Set());
-    setTrayBump(false);
+    setTrayBumpMode('none');
+    setComboGlowDepth(0);
     setComboPraise(null);
+    setIsIntenseCombo(false);
     setCallouts([]);
     setHintPair(null);
     setShuffleNotice(false);
@@ -304,19 +524,84 @@ export const MatchBoardView: React.FC<MatchBoardViewProps> = ({
       if (mountedRef.current) {
         setCallouts((prev) => prev.filter((item) => item.id !== id));
       }
-    }, 720);
+    }, 620);
   }, []);
 
-  const showPraiseBanner = useCallback((text: string) => {
+  const showPraiseBanner = useCallback((text: string, intense = false) => {
     setComboPraise(text);
+    setIsIntenseCombo(intense);
     window.setTimeout(() => {
       if (mountedRef.current) {
-        setComboPraise((cur) => (cur === text ? null : cur));
+        setComboPraise((cur) => {
+          if (cur === text) {
+            setIsIntenseCombo(false);
+            return null;
+          }
+          return cur;
+        });
       }
-    }, 900);
+    }, 600);
   }, []);
 
-  // Signature Candy Crush "Sugar Crush" / درخشش پایانی Finale
+  const computeGravityMotions = useCallback(
+    (beforeBoard: BoardCell[][], afterBoard: BoardCell[][]): {
+      drops: Record<string, DropMotion>;
+      spawns: Set<string>;
+    } => {
+      const prevRowById = new Map<string, number>();
+      for (let r = 0; r < beforeBoard.length; r += 1) {
+        for (let c = 0; c < (beforeBoard[r]?.length ?? 0); c += 1) {
+          const p = beforeBoard[r][c].piece;
+          if (p) prevRowById.set(p.id, r);
+        }
+      }
+
+      const drops: Record<string, DropMotion> = {};
+      const spawns = new Set<string>();
+      const newCountByCol = new Map<number, number>();
+
+      for (let r = 0; r < afterBoard.length; r += 1) {
+        for (let c = 0; c < (afterBoard[r]?.length ?? 0); c += 1) {
+          const p = afterBoard[r][c].piece;
+          if (!p) continue;
+          if (p.isNew && !prevRowById.has(p.id)) {
+            newCountByCol.set(c, (newCountByCol.get(c) ?? 0) + 1);
+          }
+        }
+      }
+
+      for (let r = 0; r < afterBoard.length; r += 1) {
+        for (let c = 0; c < (afterBoard[r]?.length ?? 0); c += 1) {
+          const p = afterBoard[r][c].piece;
+          if (!p) continue;
+          const prevR = prevRowById.get(p.id);
+          if (prevR !== undefined) {
+            const deltaRows = r - prevR;
+            if (deltaRows > 0) {
+              drops[p.id] = {
+                dropY: `${-deltaRows * 108}%`,
+                delayMs: c * 10,
+                isSpawn: false,
+              };
+            }
+          } else if (p.isNew) {
+            const colSpawnCount = newCountByCol.get(c) ?? 1;
+            const dropCells = Math.max(1.2, colSpawnCount + 0.35);
+            drops[p.id] = {
+              dropY: `${-dropCells * 112}%`,
+              delayMs: c * 12,
+              isSpawn: true,
+            };
+          }
+        }
+      }
+
+      return { drops, spawns };
+    },
+    []
+  );
+
+  // End-of-Level Bonus Finale
   const runSalonCrushFinale = useCallback(
     async (
       currentBoard: BoardCell[][],
@@ -328,8 +613,9 @@ export const MatchBoardView: React.FC<MatchBoardViewProps> = ({
 
       if (remainingMoves <= 0) return finalScore;
 
-      showPraiseBanner('درخشش پایانی!');
+      showPraiseBanner('درخشش پایانی!', true);
       salonAudio.playSpecialTrigger('prism');
+      setComboGlowDepth(3);
 
       const beats = Math.min(remainingMoves, 6);
       const leftoverDirectBonus = Math.max(0, remainingMoves - beats) * 140;
@@ -350,40 +636,49 @@ export const MatchBoardView: React.FC<MatchBoardViewProps> = ({
         const pick = candidates[Math.floor(Math.random() * candidates.length)];
         workingBoard[pick.row][pick.col].piece!.special =
           m % 3 === 2 ? 'bomb' : m % 2 === 0 ? 'line-h' : 'line-v';
+        setSpawnSpecialKeys(new Set([`${pick.row},${pick.col}`]));
         setBoard(cloneBoard(workingBoard));
         await sleep(110);
         if (!mountedRef.current) return finalScore;
+        setSpawnSpecialKeys(new Set());
 
         const step = detonateQueue(workingBoard, [pick], new Set(), 2);
         setBeamRows(step.beamRows);
         setBeamCols(step.beamCols);
         setBombCenters(step.bombCenters);
         setClearingKeys(new Set(step.clearedCoords.map((p) => `${p.row},${p.col}`)));
+        setTrayBumpMode(step.bombCenters.length > 0 ? 'strong' : 'soft');
         salonAudio.playSpecialTrigger(m % 3 === 2 ? 'bomb' : 'line-h');
 
         finalScore += step.pointsEarned + 120;
         setScore(finalScore);
         addCallout(`+${formatFaNumber(step.pointsEarned + 120)}`, pick.row, pick.col);
 
-        await sleep(150);
+        await sleep(220);
         if (!mountedRef.current) return finalScore;
         setClearingKeys(new Set());
         setBeamRows([]);
         setBeamCols([]);
         setBombCenters([]);
+        setTrayBumpMode('none');
 
-        workingBoard = applyGravityAndRefill(
+        const nextBoard = applyGravityAndRefill(
           step.board,
           level.piecePool,
           rngRef.current
         );
+        const { drops } = computeGravityMotions(step.board, nextBoard);
+        setDropMotions(drops);
+        workingBoard = nextBoard;
         setBoard(workingBoard);
-        await sleep(120);
+        await sleep(200);
+        setDropMotions({});
       }
 
+      setComboGlowDepth(0);
       return finalScore;
     },
-    [level.rows, level.cols, level.piecePool, showPraiseBanner, addCallout]
+    [level.rows, level.cols, level.piecePool, showPraiseBanner, addCallout, computeGravityMotions]
   );
 
   const checkEndConditions = useCallback(
@@ -454,7 +749,8 @@ export const MatchBoardView: React.FC<MatchBoardViewProps> = ({
       startingBoard: BoardCell[][],
       preferredCoords: Array<{ row: number; col: number }>,
       movesAfterMove: number,
-      initialStep?: ReturnType<typeof resolveBoardMatches>
+      initialStep?: ReturnType<typeof resolveBoardMatches>,
+      explicitPrisms: Array<{ row: number; col: number }> = []
     ) => {
       setIsBusy(true);
       let workingBoard = startingBoard;
@@ -475,22 +771,63 @@ export const MatchBoardView: React.FC<MatchBoardViewProps> = ({
           );
 
         while (step.hadMatch && mountedRef.current) {
-          setClearingKeys(
-            new Set(step.clearedCoords.map((p) => `${p.row},${p.col}`))
-          );
+          const isRtl = getIsRtl();
+
+          const newSpecials = new Set<string>();
+          for (let r = 0; r < level.rows; r += 1) {
+            for (let c = 0; c < level.cols; c += 1) {
+              const prevP = workingBoard[r][c].piece;
+              const nextP = step.board[r][c].piece;
+              if (nextP && nextP.isNew && nextP.special !== 'none' && prevP?.id !== nextP.id) {
+                newSpecials.add(`${r},${c}`);
+              }
+            }
+          }
+          setSpawnSpecialKeys(newSpecials);
+
+          const prisms: Array<{ row: number; col: number }> =
+            cascadeDepth === 1 ? [...explicitPrisms] : [];
+          for (const coord of step.clearedCoords) {
+            if (workingBoard[coord.row]?.[coord.col]?.piece?.special === 'prism') {
+              if (!prisms.some((p) => p.row === coord.row && p.col === coord.col)) {
+                prisms.push({ row: coord.row, col: coord.col });
+              }
+            }
+          }
+          setPrismCenters(prisms);
+
+          const flights: ButterflyFlightVisual[] = step.butterflyFlights.map((f, idx) => {
+            const dxCells = isRtl ? f.from.col - f.to.col : f.to.col - f.from.col;
+            const dyCells = f.to.row - f.from.row;
+            return {
+              id: `bf-${Date.now()}-${idx}`,
+              from: f.from,
+              to: f.to,
+              flyX: `${dxCells * 100}%`,
+              flyY: `${dyCells * 100}%`,
+            };
+          });
+          setButterflyFlights(flights);
           setButterflyTargetKeys(
             new Set(step.butterflyFlights.map((f) => `${f.to.row},${f.to.col}`))
           );
 
+          setClearingKeys(
+            new Set(step.clearedCoords.map((p) => `${p.row},${p.col}`))
+          );
+
+          const particleScale = cascadeDepth >= 3 ? 1.35 : cascadeDepth === 2 ? 1.18 : 1;
+          const maxSparkles = cascadeDepth >= 3 ? 22 : 16;
           const newSparkles: SparkleBurst[] = step.clearedCoords
-            .slice(0, 14)
+            .slice(0, maxSparkles)
             .map((coord, idx) => {
               const cellPiece = workingBoard[coord.row]?.[coord.col]?.piece;
               return {
                 id: `sp-${Date.now()}-${idx}`,
                 row: coord.row,
                 col: coord.col,
-                color: cellPiece ? PIECE_META[cellPiece.type].color : '#E23B78',
+                color: cellPiece ? PALETTE_PARTICLE_BY_TYPE[cellPiece.type] : '#B76E79',
+                scale: particleScale,
               };
             });
           setSparkles(newSparkles);
@@ -499,12 +836,34 @@ export const MatchBoardView: React.FC<MatchBoardViewProps> = ({
           setBeamCols(step.beamCols);
           setBombCenters(step.bombCenters);
 
-          if (step.beamRows.length > 0 || step.beamCols.length > 0) {
+          const hasBigSpecial =
+            step.bombCenters.length > 0 ||
+            prisms.length > 0 ||
+            step.beamRows.length > 0 ||
+            step.beamCols.length > 0;
+
+          if (
+            cascadeDepth >= 3 ||
+            step.bombCenters.length > 0 ||
+            prisms.length > 0 ||
+            step.beamRows.length > 0 ||
+            step.beamCols.length > 0
+          ) {
+            setTrayBumpMode('strong');
+          } else if (cascadeDepth === 2 || hasBigSpecial || step.clearedCoords.length >= 5) {
+            setTrayBumpMode('soft');
+          } else {
+            setTrayBumpMode('none');
+          }
+
+          setComboGlowDepth(cascadeDepth);
+
+          if (prisms.length > 0) {
+            salonAudio.playSpecialTrigger('prism');
+          } else if (step.beamRows.length > 0 || step.beamCols.length > 0) {
             salonAudio.playSpecialTrigger('line-h');
-            setTrayBump(true);
           } else if (step.bombCenters.length > 0) {
             salonAudio.playSpecialTrigger('bomb');
-            setTrayBump(true);
           } else {
             salonAudio.playMatch(cascadeDepth);
           }
@@ -513,13 +872,14 @@ export const MatchBoardView: React.FC<MatchBoardViewProps> = ({
             salonAudio.playFrostBreak();
           }
 
-          if (cascadeDepth >= 2 || step.clearedCoords.length >= 5) {
-            const praiseIdx = Math.min(cascadeDepth - 1, COMBO_PRAISE_FA.length - 1);
-            showPraiseBanner(COMBO_PRAISE_FA[Math.max(0, praiseIdx)]);
+          if (cascadeDepth >= 2) {
+            showPraiseBanner(`Combo ×${cascadeDepth}`, cascadeDepth >= 3);
+          } else if (step.clearedCoords.length >= 5) {
+            showPraiseBanner('درخشش عالی!', false);
           }
 
           const anchor = step.clearedCoords[0] ?? { row: 3, col: 3 };
-          const prefix = cascadeDepth > 1 ? `کمبو ×${toFaDigits(cascadeDepth)} ` : '';
+          const prefix = cascadeDepth > 1 ? `Combo ×${cascadeDepth} · ` : '';
           addCallout(`${prefix}+${formatFaNumber(step.pointsEarned)}`, anchor.row, anchor.col);
 
           runningScore += step.pointsEarned;
@@ -534,25 +894,39 @@ export const MatchBoardView: React.FC<MatchBoardViewProps> = ({
           setClearedFrostCount(runningFrost);
           setClearedLocksCount(runningLocks);
 
-          await sleep(185);
+          // Match clear pop + radial wave + particles (240-290ms)
+          await sleep(flights.length > 0 ? 290 : 250);
           if (!mountedRef.current) return;
 
           setClearingKeys(new Set());
+          setSpawnSpecialKeys(new Set());
           setButterflyTargetKeys(new Set());
+          setButterflyFlights([]);
           setSparkles([]);
           setBeamRows([]);
           setBeamCols([]);
           setBombCenters([]);
-          setTrayBump(false);
+          setPrismCenters([]);
+          setTrayBumpMode('none');
 
-          workingBoard = applyGravityAndRefill(
+          await sleep(20);
+          if (!mountedRef.current) return;
+
+          const nextBoard = applyGravityAndRefill(
             step.board,
             level.piecePool,
             rngRef.current
           );
+          const { drops } = computeGravityMotions(step.board, nextBoard);
+          setDropMotions(drops);
+          workingBoard = nextBoard;
           setBoard(workingBoard);
 
-          await sleep(185);
+          await sleep(225);
+          if (!mountedRef.current) return;
+          setDropMotions({});
+
+          await sleep(20);
           if (!mountedRef.current) return;
 
           cascadeDepth += 1;
@@ -564,12 +938,14 @@ export const MatchBoardView: React.FC<MatchBoardViewProps> = ({
           );
         }
 
+        setComboGlowDepth(0);
+
         if (!findValidMove(workingBoard) && mountedRef.current) {
           setShuffleNotice(true);
-          await sleep(340);
+          await sleep(260);
           workingBoard = shuffleBoard(workingBoard, rngRef.current);
           setBoard(workingBoard);
-          await sleep(240);
+          await sleep(220);
           setShuffleNotice(false);
         }
 
@@ -585,6 +961,7 @@ export const MatchBoardView: React.FC<MatchBoardViewProps> = ({
         }
       } finally {
         if (mountedRef.current) {
+          setComboGlowDepth(0);
           setIsBusy(false);
         }
       }
@@ -594,10 +971,13 @@ export const MatchBoardView: React.FC<MatchBoardViewProps> = ({
       collectedPieces,
       clearedFrostCount,
       clearedLocksCount,
+      level.rows,
+      level.cols,
       level.piecePool,
       priorityPieceTypes,
       addCallout,
       showPraiseBanner,
+      computeGravityMotions,
       checkEndConditions,
     ]
   );
@@ -611,8 +991,33 @@ export const MatchBoardView: React.FC<MatchBoardViewProps> = ({
       setHintPair(null);
       setSelected(null);
 
+      const isRtl = getIsRtl();
+      const rawDx = b.col - a.col;
+      const dxScreen = isRtl ? -rawDx : rawDx;
+      const dyScreen = b.row - a.row;
+
       if (!isSwapValid(board, a, b)) {
         salonAudio.playInvalidSwap();
+        setIsBusy(true);
+        setInvalidNudges([
+          {
+            row: a.row,
+            col: a.col,
+            nudgeX: `${dxScreen * 22}%`,
+            nudgeY: `${dyScreen * 22}%`,
+          },
+          {
+            row: b.row,
+            col: b.col,
+            nudgeX: `${-dxScreen * 22}%`,
+            nudgeY: `${-dyScreen * 22}%`,
+          },
+        ]);
+        await sleep(230);
+        if (mountedRef.current) {
+          setInvalidNudges([]);
+          setIsBusy(false);
+        }
         return;
       }
 
@@ -620,20 +1025,48 @@ export const MatchBoardView: React.FC<MatchBoardViewProps> = ({
       const nextMoves = Math.max(0, movesLeft - 1);
       setMovesLeft(nextMoves);
 
+      const pA = board[a.row][a.col].piece;
+      const pB = board[b.row][b.col].piece;
+      const explicitPrisms: Array<{ row: number; col: number }> = [];
+      if (pA?.special === 'prism') explicitPrisms.push(b);
+      if (pB?.special === 'prism') explicitPrisms.push(a);
+
+      const swaps: Record<string, SwapMotion> = {};
+      if (pA) {
+        swaps[pA.id] = {
+          swapX: `${-dxScreen * 105}%`,
+          swapY: `${-dyScreen * 105}%`,
+        };
+      }
+      if (pB) {
+        swaps[pB.id] = {
+          swapX: `${dxScreen * 105}%`,
+          swapY: `${dyScreen * 105}%`,
+        };
+      }
+
       const { nextBoard, specialComboResult } = executeSwapAndCheckSpecial(
         board,
         a,
         b,
         priorityPieceTypes
       );
+      setSwapMotions(swaps);
       setBoard(nextBoard);
-      await sleep(120);
+      await sleep(145);
       if (!mountedRef.current) return;
+      setSwapMotions({});
 
       if (specialComboResult) {
         salonAudio.playSpecialTrigger('prism');
-        showPraiseBanner('ترکیب ویژه!');
-        await runResolutionPipeline(nextBoard, [b, a], nextMoves, specialComboResult);
+        showPraiseBanner('Combo ×2', true);
+        await runResolutionPipeline(
+          nextBoard,
+          [b, a],
+          nextMoves,
+          specialComboResult,
+          explicitPrisms
+        );
       } else {
         await runResolutionPipeline(nextBoard, [b, a], nextMoves);
       }
@@ -686,8 +1119,12 @@ export const MatchBoardView: React.FC<MatchBoardViewProps> = ({
           special: (row + col) % 2 === 0 ? 'line-h' : 'line-v',
           isNew: true,
         };
+        setSpawnSpecialKeys(new Set([`${row},${col}`]));
         setBoard(updated);
-        addCallout('قلم‌موی UV آماده شد!', row, col);
+        addCallout('قلم UV آماده شد', row, col);
+        window.setTimeout(() => {
+          if (mountedRef.current) setSpawnSpecialKeys(new Set());
+        }, 260);
         return;
       }
 
@@ -749,9 +1186,7 @@ export const MatchBoardView: React.FC<MatchBoardViewProps> = ({
     let targetRow = origin.row;
     let targetCol = origin.col;
     if (Math.abs(dx) > Math.abs(dy)) {
-      const isRtl =
-        typeof document !== 'undefined' &&
-        getComputedStyle(document.documentElement).direction === 'rtl';
+      const isRtl = getIsRtl();
       const colStep = dx > 0 ? (isRtl ? -1 : 1) : isRtl ? 1 : -1;
       targetCol += colStep;
     } else {
@@ -799,11 +1234,15 @@ export const MatchBoardView: React.FC<MatchBoardViewProps> = ({
   };
 
   const trayBorderClass =
-    equippedPolishId === 'polish-champagne-foil'
-      ? 'border-[#D49E2A]'
-      : equippedPolishId === 'polish-lavender-haze'
-        ? 'border-[#A77DF0]'
-        : 'border-[#E682AA]';
+    comboGlowDepth >= 3
+      ? 'border-[#B76E79] ring-4 ring-[#E8B4B8]/65'
+      : comboGlowDepth === 2
+        ? 'border-[#B76E79] ring-2 ring-[#E8B4B8]/50'
+        : equippedPolishId === 'polish-champagne-foil'
+          ? 'border-[#B76E79]'
+          : equippedPolishId === 'polish-lavender-haze'
+            ? 'border-[#E8B4B8]'
+            : 'border-[#D3B6AC]';
 
   const currentStarsPreview = useMemo(() => {
     const [s1, s2, s3] = level.starThresholds;
@@ -819,41 +1258,55 @@ export const MatchBoardView: React.FC<MatchBoardViewProps> = ({
   );
 
   return (
-    <div className="min-h-[100dvh] w-full text-[#351427] flex flex-col items-center justify-between px-3 py-3 sm:px-6 sm:py-5 select-none">
-      {/* Compact 2.5D Salon Game HUD */}
-      <header className="w-full max-w-[540px] flex flex-col gap-2.5">
+    <div className="min-h-[100dvh] w-full overflow-x-hidden pp-salon-table text-[#6B2D3C] flex flex-col items-center justify-between px-1.5 py-2.5 sm:px-6 sm:py-4 select-none">
+      {/* Luxury Salon Header & Objectives Strip */}
+      <header className="w-full max-w-[520px] flex flex-col gap-2">
         <div className="flex items-center justify-between gap-2">
           <button
             type="button"
             onClick={() => setModalState('PAUSED')}
             aria-label="توقف بازی"
-            className="h-11 px-3.5 rounded-xl btn-3d-pearl border border-[#EBCAD6] text-[#351427] flex items-center gap-2 font-bold text-sm shrink-0"
+            className="h-10 sm:h-11 px-3 rounded-[12px] btn-3d-pearl border border-[#DEC9BF] text-[#6B2D3C] flex items-center gap-1.5 font-bold text-xs sm:text-sm shrink-0"
           >
-            <Pause className="w-4 h-4" />
+            <SalonBoardIcon name="pause" className="w-4 h-4" />
             <span className="hidden sm:inline">توقف</span>
           </button>
 
-          <div className="text-center min-w-0 flex-1 px-2">
-            <p className="text-[11px] font-bold text-[#9A2353] truncate">
-              {isBattleMode ? 'چالش رقابتی نبرد ناخن' : `مرحله ${toFaDigits(level.id)}`} · {level.title}
-            </p>
-            <div className="flex items-center justify-center gap-2 text-sm font-bold tabular-nums">
+          <div className="text-center min-w-0 flex-1 px-1">
+            <div className="flex items-center justify-center gap-1.5">
+              <SalonBoardIcon name="flower-brand" className="w-4 h-4 shrink-0" />
+              <span
+                dir="ltr"
+                className="font-display text-sm sm:text-base font-bold tracking-tight text-[#6B2D3C] whitespace-nowrap"
+              >
+                Persian Petal
+              </span>
+              <span aria-hidden="true" className="text-[#B76E79] text-xs">·</span>
+              <span className="text-[11px] font-bold text-[#944E59] truncate">
+                {isBattleMode ? 'نبرد ناخن' : `مرحله ${toFaDigits(level.id)}`}
+              </span>
+            </div>
+
+            <div className="mt-0.5 flex items-center justify-center gap-2 text-xs sm:text-sm font-display font-bold tabular-nums text-[#6B2D3C]">
               <span>امتیاز {formatFaNumber(score)}</span>
-              <span aria-hidden="true" className="text-[#B78B9E]">·</span>
-              <span className="inline-flex items-center gap-0.5 text-[#C89B3C]">
+              <span aria-hidden="true" className="text-[#B76E79]">·</span>
+              <span className="inline-flex items-center gap-0.5">
                 {[1, 2, 3].map((idx) => (
-                  <Star
+                  <SalonBoardIcon
                     key={idx}
-                    className={`w-4 h-4 ${
-                      idx <= currentStarsPreview ? 'fill-[#F5B922] text-[#B45309]' : 'text-[#DFC7D0]'
+                    name="star"
+                    filled={idx <= currentStarsPreview}
+                    className={`w-4 h-4 transition-transform duration-200 ${
+                      idx <= currentStarsPreview ? 'scale-110' : 'opacity-55'
                     }`}
                   />
                 ))}
               </span>
             </div>
-            <div className="mt-1 mx-auto w-36 h-2 rounded-full bg-[#F1D6E2] overflow-hidden border border-[#E4B8CA]">
+
+            <div className="mt-1 mx-auto w-36 h-1.5 rounded-full bg-[#E8DCD0] overflow-hidden border border-[#DEC9BF]">
               <div
-                className="h-full rounded-full bg-gradient-to-l from-[#FBBF24] via-[#F472B6] to-[#E23B78] transition-all duration-300"
+                className="h-full rounded-full bg-gradient-to-l from-[#6B2D3C] via-[#B76E79] to-[#E8B4B8] transition-all duration-300"
                 style={{ width: `${starMeterPercent}%` }}
               />
             </div>
@@ -863,45 +1316,41 @@ export const MatchBoardView: React.FC<MatchBoardViewProps> = ({
             type="button"
             onClick={onToggleSound}
             aria-label={soundMuted ? 'وصل صدا' : 'قطع صدا'}
-            className="h-11 w-11 rounded-xl btn-3d-pearl border border-[#EBCAD6] text-[#351427] flex items-center justify-center shrink-0"
+            className="h-10 w-10 sm:h-11 sm:w-11 rounded-[12px] btn-3d-pearl border border-[#DEC9BF] text-[#6B2D3C] flex items-center justify-center shrink-0"
           >
-            {soundMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+            <SalonBoardIcon name={soundMuted ? 'sound-off' : 'sound-on'} className="w-4 h-4" />
           </button>
         </div>
 
-        {/* 2.5D Objectives & Moves Strip */}
-        <div className="rounded-2xl surface-25d border border-[#EBCAD6] px-4 py-2.5 flex items-center justify-between gap-3">
-          <div className="flex flex-wrap items-center gap-3.5 min-w-0">
+        {/* Ceramic Orders & Remaining Moves Bar */}
+        <div className="rounded-[16px] surface-25d border border-[#DEC9BF] px-3 py-2 sm:px-4 sm:py-2.5 flex items-center justify-between gap-2.5">
+          <div className="flex flex-wrap items-center gap-3 min-w-0">
             {objectiveProgress.map((obj) => (
               <div key={obj.id} className="flex items-center gap-2">
-                <div className="w-9 h-9 rounded-xl cell-25d border border-[#F0D4DE] p-1 shrink-0 flex items-center justify-center">
+                <div className="w-9 h-9 rounded-[10px] cell-25d border border-[#DEC9BF] p-1 shrink-0 flex items-center justify-center">
                   {obj.kind === 'clear-frost' ? (
-                    <span className="text-base font-bold text-[#E23B78]" aria-hidden="true">
-                      ✿
-                    </span>
+                    <SalonBoardIcon name="frost-petal" className="w-5 h-5" />
                   ) : obj.kind === 'clear-locks' ? (
-                    <span className="text-sm font-bold text-[#9A2353]" aria-hidden="true">
-                      🎀
-                    </span>
+                    <SalonBoardIcon name="ribbon" className="w-5 h-5" />
                   ) : obj.pieceType ? (
                     <NailPieceGraphic type={obj.pieceType} />
                   ) : null}
                 </div>
                 <div className="leading-tight">
-                  <div className="text-[11px] text-[#6C3B53] font-bold">
+                  <div className="text-[11px] text-[#944E59] font-bold">
                     {obj.kind === 'clear-frost'
-                      ? 'کاشی گل یخی'
+                      ? 'کاشی گل'
                       : obj.kind === 'clear-locks'
                         ? 'گره روبان'
                         : obj.pieceType
                           ? PIECE_META[obj.pieceType].shortLabel
                           : 'هدف'}
                   </div>
-                  <div className="text-sm font-bold tabular-nums flex items-center gap-1">
+                  <div className="text-xs sm:text-sm font-display font-bold tabular-nums flex items-center gap-1">
                     {obj.done ? (
-                      <span className="text-[#15806B] inline-flex items-center gap-1">
-                        <Check className="w-3.5 h-3.5" />
-                        تکمیل
+                      <span className="text-[#2E8B63] inline-flex items-center gap-1">
+                        <SalonBoardIcon name="check" className="w-3.5 h-3.5" />
+                        <span>تکمیل</span>
                       </span>
                     ) : (
                       <span>
@@ -914,11 +1363,11 @@ export const MatchBoardView: React.FC<MatchBoardViewProps> = ({
             ))}
           </div>
 
-          <div className="pr-3 border-r border-[#F2DCE4] text-center shrink-0 min-w-[64px]">
-            <div className="text-[11px] font-bold text-[#6C3B53]">حرکت</div>
+          <div className="pr-3 border-r border-[#DEC9BF] text-center shrink-0 min-w-[58px]">
+            <div className="text-[11px] font-bold text-[#944E59]">حرکت</div>
             <div
-              className={`text-2xl font-display font-bold tabular-nums leading-none mt-0.5 ${
-                movesLeft <= 5 ? 'text-[#C81E5A] scale-105' : 'text-[#351427]'
+              className={`text-2xl font-display font-bold tabular-nums leading-none mt-0.5 transition-transform duration-200 ${
+                movesLeft <= 5 ? 'text-[#C94A5A] scale-110' : 'text-[#6B2D3C]'
               }`}
             >
               {toFaDigits(movesLeft)}
@@ -927,19 +1376,19 @@ export const MatchBoardView: React.FC<MatchBoardViewProps> = ({
         </div>
       </header>
 
-      {/* Main 2.5D Match-3 Salon Tray */}
-      <main className="w-full flex-1 flex flex-col items-center justify-center my-2 relative">
+      {/* Ceramic Manicure Tray & Recessed Grid */}
+      <main className="w-full flex-1 flex flex-col items-center justify-center my-1.5 sm:my-2 relative">
         {activeBooster && (
-          <div className="mb-2 px-3.5 py-1.5 rounded-xl bg-[#351427] text-white text-xs font-bold flex items-center gap-2.5 shadow-md">
+          <div className="mb-2 px-3.5 py-1.5 rounded-[12px] bg-[#6B2D3C] text-[#F5EDE4] text-xs font-bold flex items-center gap-2.5 shadow-md">
             <span>
               {activeBooster === 'precision-file'
-                ? 'روی هر خانه بزنید تا سوهان بخورد و پاک شود'
-                : 'روی هر مهره آزاد بزنید تا به قلم‌موی لیزری UV تبدیل شود'}
+                ? 'روی یک خانه بزنید تا سوهان بخورد'
+                : 'روی یک مهره آزاد بزنید تا قلم UV شود'}
             </span>
             <button
               type="button"
               onClick={() => setActiveBooster(null)}
-              className="underline text-amber-300"
+              className="underline text-[#E8B4B8]"
             >
               انصراف
             </button>
@@ -947,21 +1396,25 @@ export const MatchBoardView: React.FC<MatchBoardViewProps> = ({
         )}
 
         {shuffleNotice && (
-          <div className="mb-2 px-3.5 py-1.5 rounded-xl bg-[#FFFDFB] border border-[#E4BCCB] text-xs font-bold text-[#9A2353] shadow-sm">
-            حرکتی نماند · در حال چیدن دوباره سینی سالن...
+          <div className="mb-2 px-3.5 py-1.5 rounded-[12px] bg-[#FAF6F0] border border-[#DEC9BF] text-xs font-bold text-[#6B2D3C] shadow-sm">
+            در حال چیدن دوباره سینی سالن...
           </div>
         )}
 
         <div
-          className={`relative w-full max-w-[468px] aspect-square rounded-[28px] tray-25d border-[3px] p-2.5 sm:p-3.5 ${trayBorderClass} ${
-            trayBump ? 'animate-tray-bump' : ''
+          className={`relative w-full max-w-[468px] aspect-square rounded-[20px] sm:rounded-[26px] tray-25d border-[2.5px] p-1.5 sm:p-3 transition-shadow duration-200 ${trayBorderClass} ${
+            trayBumpMode === 'strong'
+              ? 'animate-tray-bump-strong'
+              : trayBumpMode === 'soft'
+                ? 'animate-tray-bump'
+                : ''
           }`}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
           onPointerCancel={handlePointerUp}
         >
           <div
-            className="grid w-full h-full gap-1.5 sm:gap-2 relative"
+            className="grid w-full h-full gap-[3px] sm:gap-1.5 relative"
             style={{
               gridTemplateColumns: `repeat(${level.cols}, minmax(0, 1fr))`,
               gridTemplateRows: `repeat(${level.rows}, minmax(0, 1fr))`,
@@ -976,9 +1429,48 @@ export const MatchBoardView: React.FC<MatchBoardViewProps> = ({
                 const key = `${r},${c}`;
                 const isSelected = selected?.row === r && selected?.col === c;
                 const isClearing = clearingKeys.has(key);
+                const isSpawnSpecial = spawnSpecialKeys.has(key);
                 const isButterflyTarget = butterflyTargetKeys.has(key);
                 const isHint =
                   hintPair?.some((h) => h.row === r && h.col === c) ?? false;
+
+                const nudge = invalidNudges.find((n) => n.row === r && n.col === c);
+                const pieceId = cell.piece?.id ?? '';
+                const dropMotion = pieceId ? dropMotions[pieceId] : undefined;
+                const swapMotion = pieceId ? swapMotions[pieceId] : undefined;
+                const isSpecialIdle = cell.piece && cell.piece.special !== 'none';
+
+                let pieceAnimClass = '';
+                let pieceAnimStyle: React.CSSProperties | undefined;
+
+                if (isClearing) {
+                  pieceAnimClass = 'animate-tile-clear';
+                } else if (nudge) {
+                  pieceAnimClass = 'animate-invalid-wiggle';
+                  pieceAnimStyle = {
+                    '--nudge-x': nudge.nudgeX,
+                    '--nudge-y': nudge.nudgeY,
+                  } as React.CSSProperties;
+                } else if (swapMotion) {
+                  pieceAnimClass = 'animate-swap-glide';
+                  pieceAnimStyle = {
+                    '--swap-x': swapMotion.swapX,
+                    '--swap-y': swapMotion.swapY,
+                  } as React.CSSProperties;
+                } else if (isSpawnSpecial) {
+                  pieceAnimClass = 'animate-petal-pop';
+                } else if (dropMotion) {
+                  pieceAnimClass = 'animate-gravity-fall';
+                  pieceAnimStyle = {
+                    '--drop-y': dropMotion.dropY,
+                    '--drop-opacity': dropMotion.isSpawn ? '0.6' : '0.95',
+                    animationDelay: `${dropMotion.delayMs}ms`,
+                  } as React.CSSProperties;
+                } else if (isSelected) {
+                  pieceAnimClass = 'animate-selected-glow';
+                } else if (isSpecialIdle) {
+                  pieceAnimClass = 'animate-special-shimmer';
+                }
 
                 return (
                   <button
@@ -991,38 +1483,59 @@ export const MatchBoardView: React.FC<MatchBoardViewProps> = ({
                         ? `${PIECE_META[cell.piece.type].name} ردیف ${toFaDigits(r + 1)} ستون ${toFaDigits(c + 1)}`
                         : `خانه خالی ردیف ${toFaDigits(r + 1)} ستون ${toFaDigits(c + 1)}`
                     }
-                    className={`relative rounded-xl sm:rounded-2xl flex items-center justify-center p-1 sm:p-1.5 transition-transform duration-150 focus-visible:outline-2 focus-visible:outline-[#E23B78] touch-none ${
+                    className={`relative rounded-[10px] sm:rounded-[14px] flex items-center justify-center p-0.5 sm:p-1.5 transition-transform duration-150 focus-visible:outline-2 focus-visible:outline-[#6B2D3C] touch-none ${
                       cell.frostLevel === 2
-                        ? 'cell-25d-frost-2 border border-[#D4558E]'
+                        ? 'cell-25d-frost-2 border border-[#944E59]'
                         : cell.frostLevel === 1
-                          ? 'cell-25d-frost-1 border border-[#E589B3]'
-                          : 'cell-25d border border-[#F2DAE4]'
+                          ? 'cell-25d-frost-1 border border-[#B76E79]'
+                          : 'cell-25d border border-[#DFCFC4]'
                     } ${
                       isSelected
-                        ? 'ring-3 ring-[#E23B78] scale-108 z-10 brightness-105'
-                        : 'hover:brightness-[1.02]'
-                    } ${isHint ? 'animate-hint ring-3 ring-[#EAB331] z-10' : ''} ${
-                      isButterflyTarget ? 'ring-3 ring-amber-400 scale-105' : ''
-                    }`}
+                        ? 'ring-2 ring-[#B76E79] shadow-[0_0_14px_rgba(183,110,121,0.5)] scale-105 z-10'
+                        : 'hover:brightness-[1.015]'
+                    } ${
+                      isHint
+                        ? 'animate-hint ring-2 ring-[#B76E79] shadow-[0_0_12px_rgba(183,110,121,0.45)] z-10'
+                        : ''
+                    } ${isButterflyTarget ? 'ring-2 ring-[#A8C3A0] scale-105 z-10' : ''}`}
                   >
                     {cell.frostLevel > 0 && (
                       <span
-                        className="pointer-events-none absolute top-0.5 left-1 text-[10px] font-bold text-[#8E1C4B] leading-none z-10"
+                        className="pointer-events-none absolute top-0.5 left-0.5 flex items-center gap-0.5 z-10"
                         aria-hidden="true"
                       >
-                        {cell.frostLevel === 2 ? '۲✿' : '✿'}
+                        <SalonBoardIcon name="frost-petal" className="w-3 h-3" />
+                        {cell.frostLevel === 2 && (
+                          <span className="text-[9px] font-bold text-[#6B2D3C] leading-none">
+                            {toFaDigits(2)}
+                          </span>
+                        )}
                       </span>
+                    )}
+
+                    {/* Match Radial Glow & Expanding Wave */}
+                    {isClearing && (
+                      <>
+                        <span
+                          className="pointer-events-none absolute -inset-1 rounded-full animate-clear-ring z-10"
+                          style={{
+                            background:
+                              'radial-gradient(circle, rgba(245,237,228,0.92) 0%, rgba(232,180,184,0.52) 55%, rgba(232,180,184,0) 78%)',
+                          }}
+                          aria-hidden="true"
+                        />
+                        <span
+                          className="pointer-events-none absolute inset-1 rounded-full border-2 border-[#B76E79] bg-[#F5EDE4]/55 animate-clear-ring z-10"
+                          aria-hidden="true"
+                        />
+                      </>
                     )}
 
                     {cell.piece && (
                       <div
-                        className={`w-full h-full flex items-center justify-center ${
-                          isClearing
-                            ? 'animate-tile-clear'
-                            : cell.piece.isNew
-                              ? 'animate-petal-pop'
-                              : ''
-                        }`}
+                        key={cell.piece.id}
+                        style={pieceAnimStyle}
+                        className={`w-full h-full flex items-center justify-center ${pieceAnimClass}`}
                       >
                         <NailPieceGraphic
                           type={cell.piece.type}
@@ -1031,16 +1544,16 @@ export const MatchBoardView: React.FC<MatchBoardViewProps> = ({
                       </div>
                     )}
 
-                    {/* Satin Ribbon Cage Overlay (Locked Obstacle) */}
+                    {/* Satin Ribbon Cage Overlay */}
                     {cell.locked && (
                       <div
-                        className="pointer-events-none absolute inset-0 rounded-xl sm:rounded-2xl border-2 border-[#D63B72] bg-[#FFE4EF]/25 flex items-center justify-center z-20"
+                        className="pointer-events-none absolute inset-0 rounded-[10px] sm:rounded-[14px] border-2 border-[#B76E79] bg-[#F5EDE4]/35 flex items-center justify-center z-20"
                         aria-hidden="true"
                       >
-                        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-1.5 bg-[#E23B78]/75" />
-                        <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-1.5 bg-[#E23B78]/75" />
-                        <span className="relative z-10 w-5 h-5 rounded-full bg-amber-300 border border-[#B45309] text-[10px] flex items-center justify-center shadow">
-                          🎀
+                        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-1.5 bg-[#B76E79]/75" />
+                        <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-1.5 bg-[#B76E79]/75" />
+                        <span className="relative z-10 w-5 h-5 rounded-full bg-[#F5EDE4] border border-[#6B2D3C] flex items-center justify-center shadow-sm">
+                          <SalonBoardIcon name="ribbon" className="w-3.5 h-3.5" />
                         </span>
                       </div>
                     )}
@@ -1050,7 +1563,7 @@ export const MatchBoardView: React.FC<MatchBoardViewProps> = ({
             )}
           </div>
 
-          {/* Sparkle Particle Bursts */}
+          {/* Outward Tile-Matched Particle Bursts */}
           {sparkles.map((sp) => (
             <div
               key={sp.id}
@@ -1063,12 +1576,16 @@ export const MatchBoardView: React.FC<MatchBoardViewProps> = ({
               {SPARKLE_VECTORS.map((vec, i) => (
                 <span
                   key={i}
-                  className="absolute w-2.5 h-2.5 rounded-full animate-sparkle"
+                  className={`absolute animate-sparkle ${
+                    vec.isStar ? 'w-2.5 h-2.5 rotate-45 rounded-[2px]' : 'w-2 h-2 rounded-full'
+                  }`}
                   style={
                     {
-                      backgroundColor: i % 2 === 0 ? sp.color : '#FDE047',
+                      backgroundColor: i % 3 === 0 ? '#F5EDE4' : sp.color,
+                      boxShadow: `0 0 6px ${sp.color}`,
                       '--tx': vec.tx,
                       '--ty': vec.ty,
+                      '--ps': String(sp.scale),
                     } as React.CSSProperties
                   }
                 />
@@ -1076,44 +1593,168 @@ export const MatchBoardView: React.FC<MatchBoardViewProps> = ({
             </div>
           ))}
 
-          {/* UV Horizontal Beam Flash */}
+          {/* Rose-Gold Horizontal & Vertical Beam Flashes */}
           {beamRows.map((rowIdx) => (
             <div
               key={`beam-h-${rowIdx}`}
-              className="pointer-events-none absolute left-2 right-2 h-7 rounded-full bg-gradient-to-r from-rose-300/20 via-amber-200/95 to-rose-300/20 shadow-[0_0_16px_rgba(251,191,36,0.8)] animate-beam-h"
+              className="pointer-events-none absolute left-2 right-2 h-8 rounded-full bg-gradient-to-r from-[#E8B4B8]/25 via-[#F5EDE4]/95 to-[#E8B4B8]/25 shadow-[0_0_20px_rgba(183,110,121,0.8)] animate-beam-h z-20 flex items-center"
               style={{
-                top: `calc(${((rowIdx + 0.5) / level.rows) * 100}% - 14px)`,
+                top: `calc(${((rowIdx + 0.5) / level.rows) * 100}% - 16px)`,
               }}
-            />
+            >
+              <div className="w-full h-2 rounded-full bg-[#F5EDE4] shadow-[0_0_8px_#F5EDE4]" />
+            </div>
           ))}
 
-          {/* UV Vertical Beam Flash */}
           {beamCols.map((colIdx) => (
             <div
               key={`beam-v-${colIdx}`}
-              className="pointer-events-none absolute top-2 bottom-2 w-7 rounded-full bg-gradient-to-b from-rose-300/20 via-amber-200/95 to-rose-300/20 shadow-[0_0_16px_rgba(251,191,36,0.8)] animate-beam-v"
+              className="pointer-events-none absolute top-2 bottom-2 w-8 rounded-full bg-gradient-to-b from-[#E8B4B8]/25 via-[#F5EDE4]/95 to-[#E8B4B8]/25 shadow-[0_0_20px_rgba(183,110,121,0.8)] animate-beam-v z-20 flex justify-center"
               style={{
-                right: `calc(${((colIdx + 0.5) / level.cols) * 100}% - 14px)`,
+                right: `calc(${((colIdx + 0.5) / level.cols) * 100}% - 16px)`,
               }}
-            />
+            >
+              <div className="h-full w-2 rounded-full bg-[#F5EDE4] shadow-[0_0_8px_#F5EDE4]" />
+            </div>
           ))}
 
-          {/* Crystal Bomb Burst Flash */}
+          {/* Rose-Gold Crystal Bomb Shockwaves + Radial Particle Ring */}
           {bombCenters.map((center, idx) => (
+            <React.Fragment key={`bomb-${idx}-${center.row}-${center.col}`}>
+              <div
+                className="pointer-events-none absolute w-32 h-32 rounded-full bg-[#E8B4B8]/40 border-[3px] border-[#F5EDE4] shadow-[0_0_24px_rgba(183,110,121,0.75)] animate-bomb-wave z-20"
+                style={{
+                  top: `calc(${((center.row + 0.5) / level.rows) * 100}% - 64px)`,
+                  right: `calc(${((center.col + 0.5) / level.cols) * 100}% - 64px)`,
+                }}
+              />
+              <div
+                className="pointer-events-none absolute w-22 h-22 rounded-full bg-[#B76E79]/30 border-2 border-[#F5EDE4] animate-bomb-wave z-20"
+                style={{
+                  animationDelay: '45ms',
+                  top: `calc(${((center.row + 0.5) / level.rows) * 100}% - 44px)`,
+                  right: `calc(${((center.col + 0.5) / level.cols) * 100}% - 44px)`,
+                }}
+              />
+              <div
+                className="pointer-events-none absolute z-20"
+                style={{
+                  top: `calc(${((center.row + 0.5) / level.rows) * 100}%)`,
+                  right: `calc(${((center.col + 0.5) / level.cols) * 100}%)`,
+                }}
+              >
+                {BOMB_RING_VECTORS.map((vec, pIdx) => (
+                  <span
+                    key={pIdx}
+                    className={`absolute animate-sparkle ${
+                      vec.isStar ? 'w-2.5 h-2.5 rotate-45 rounded-[2px]' : 'w-2 h-2 rounded-full'
+                    }`}
+                    style={
+                      {
+                        backgroundColor:
+                          pIdx % 3 === 0 ? '#F5EDE4' : pIdx % 2 === 0 ? '#B76E79' : '#E8B4B8',
+                        boxShadow: '0 0 6px rgba(183,110,121,0.8)',
+                        '--tx': vec.tx,
+                        '--ty': vec.ty,
+                        '--ps': '1.25',
+                      } as React.CSSProperties
+                    }
+                  />
+                ))}
+              </div>
+            </React.Fragment>
+          ))}
+
+          {/* Prism Color-Wave Shockwave + Diagonal Cream-Rose Board Sweep */}
+          {prismCenters.length > 0 && (
+            <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-[22px] z-20">
+              <div
+                className="absolute -inset-y-1/2 left-0 w-2/3 animate-prism-sweep"
+                style={{
+                  background:
+                    'linear-gradient(90deg, rgba(245,237,228,0) 0%, rgba(232,180,184,0.45) 35%, rgba(245,237,228,0.65) 50%, rgba(168,195,160,0.4) 68%, rgba(245,237,228,0) 100%)',
+                  filter: 'blur(4px)',
+                }}
+              />
+            </div>
+          )}
+
+          {prismCenters.map((center, idx) => (
             <div
-              key={`bomb-${idx}-${center.row}-${center.col}`}
-              className="pointer-events-none absolute w-32 h-32 rounded-full bg-amber-300/45 border-2 border-amber-300 shadow-[0_0_24px_rgba(245,158,11,0.75)] animate-tile-clear"
+              key={`prism-${idx}-${center.row}-${center.col}`}
+              className="pointer-events-none absolute w-36 h-36 rounded-full border-[3px] border-[#F5EDE4] animate-prism-wave z-20"
               style={{
-                top: `calc(${((center.row + 0.5) / level.rows) * 100}% - 64px)`,
-                right: `calc(${((center.col + 0.5) / level.cols) * 100}% - 64px)`,
+                background:
+                  'radial-gradient(circle, rgba(245,237,228,0.75) 0%, rgba(232,180,184,0.48) 48%, rgba(168,195,160,0.32) 75%, rgba(183,110,121,0) 100%)',
+                boxShadow: '0 0 30px rgba(183,110,121,0.72)',
+                top: `calc(${((center.row + 0.5) / level.rows) * 100}% - 72px)`,
+                right: `calc(${((center.col + 0.5) / level.cols) * 100}% - 72px)`,
               }}
             />
           ))}
 
-          {/* Combo Praise Banner */}
+          {/* Flying Rose-Gold Butterfly Sprites + Cream Sparkle Trail */}
+          {butterflyFlights.length > 0 && (
+            <div className="pointer-events-none absolute inset-1.5 sm:inset-3 z-30">
+              {butterflyFlights.map((flight) => (
+                <React.Fragment key={flight.id}>
+                  {BUTTERFLY_TRAIL_STOPS.map((stop, tIdx) => (
+                    <div
+                      key={`${flight.id}-tr-${tIdx}`}
+                      className="pointer-events-none absolute flex items-center justify-center animate-butterfly-trail"
+                      style={
+                        {
+                          top: `calc(${(flight.from.row / level.rows) * 100}%)`,
+                          right: `calc(${(flight.from.col / level.cols) * 100}%)`,
+                          width: `calc(${100 / level.cols}%)`,
+                          height: `calc(${100 / level.rows}%)`,
+                          '--fly-x': flight.flyX,
+                          '--fly-y': flight.flyY,
+                          '--tp': stop.tp,
+                          animationDelay: `${stop.delayMs}ms`,
+                        } as React.CSSProperties
+                      }
+                    >
+                      <span
+                        className={`rounded-full bg-[#F5EDE4] border border-[#B76E79] shadow-[0_0_8px_rgba(183,110,121,0.85)] ${stop.sizeClass}`}
+                      />
+                    </div>
+                  ))}
+                  <div
+                    className="pointer-events-none absolute flex items-center justify-center animate-butterfly-fly"
+                    style={
+                      {
+                        top: `calc(${(flight.from.row / level.rows) * 100}%)`,
+                        right: `calc(${(flight.from.col / level.cols) * 100}%)`,
+                        width: `calc(${100 / level.cols}%)`,
+                        height: `calc(${100 / level.rows}%)`,
+                        '--fly-x': flight.flyX,
+                        '--fly-y': flight.flyY,
+                      } as React.CSSProperties
+                    }
+                  >
+                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-[#F5EDE4] via-[#E8B4B8] to-[#B76E79] border-2 border-[#6B2D3C] shadow-[0_0_14px_rgba(183,110,121,0.75)] flex items-center justify-center">
+                      <svg viewBox="0 0 24 24" className="w-5 h-5 text-[#6B2D3C]" fill="currentColor" aria-hidden="true">
+                        <path d="M12 11 C9 5, 3 4, 3 9 C3 12, 7 13, 10 12 C7 14, 5 18, 8 19 C10 20, 11 16, 12 14 C13 16, 14 20, 16 19 C19 18, 17 14, 14 12 C17 13, 21 12, 21 9 C21 4, 15 5, 12 11 Z" />
+                      </svg>
+                    </div>
+                  </div>
+                </React.Fragment>
+              ))}
+            </div>
+          )}
+
+          {/* Combo ×N Banner (0.8 -> 1 scale, 600ms fade-out) */}
           {comboPraise && (
             <div className="pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 z-30 flex justify-center">
-              <div className="px-6 py-2 rounded-2xl btn-3d-gold text-[#351427] font-display text-2xl sm:text-3xl font-bold shadow-xl animate-combo-banner border-2 border-white">
+              <div
+                dir="ltr"
+                className={`px-5 py-1.5 rounded-[12px] btn-3d-rose text-[#F5EDE4] font-display font-bold tabular-nums border border-[#F5EDE4] ${
+                  isIntenseCombo || comboGlowDepth >= 3
+                    ? 'animate-combo-banner-intense text-2xl sm:text-3xl shadow-[0_8px_24px_rgba(107,45,60,0.4)]'
+                    : 'animate-combo-banner text-xl sm:text-2xl shadow-lg'
+                }`}
+              >
                 {comboPraise}
               </div>
             </div>
@@ -1123,7 +1764,7 @@ export const MatchBoardView: React.FC<MatchBoardViewProps> = ({
           {callouts.map((c) => (
             <div
               key={c.id}
-              className="pointer-events-none absolute z-20 px-2.5 py-0.5 rounded-lg bg-[#351427]/90 text-amber-200 text-xs font-bold tabular-nums shadow animate-float-score"
+              className="pointer-events-none absolute z-20 px-2.5 py-0.5 rounded-[10px] bg-[#6B2D3C]/95 text-[#F5EDE4] text-xs font-display font-bold tabular-nums shadow animate-float-score"
               style={{
                 top: `calc(${((c.row + 0.3) / level.rows) * 100}%)`,
                 right: `calc(${((c.col + 0.5) / level.cols) * 100}% - 26px)`,
@@ -1135,8 +1776,8 @@ export const MatchBoardView: React.FC<MatchBoardViewProps> = ({
         </div>
       </main>
 
-      {/* Bottom 2.5D Salon Boosters Tray */}
-      <footer className="w-full max-w-[540px] flex items-center justify-between gap-2">
+      {/* Bottom 12px Luxury Boosters Bar */}
+      <footer className="w-full max-w-[520px] grid grid-cols-4 gap-1.5 sm:gap-2">
         <button
           type="button"
           onClick={() =>
@@ -1145,15 +1786,17 @@ export const MatchBoardView: React.FC<MatchBoardViewProps> = ({
             )
           }
           disabled={isBusy || boosters['precision-file'] <= 0}
-          className={`flex-1 min-h-[50px] px-2.5 py-2 rounded-2xl border text-xs font-bold flex items-center justify-center gap-1.5 transition-all disabled:opacity-45 ${
+          className={`min-h-[46px] px-2 py-1.5 rounded-[12px] border text-[11px] sm:text-xs font-bold flex items-center justify-center gap-1 disabled:opacity-45 ${
             activeBooster === 'precision-file'
-              ? 'btn-3d-rose border-[#991345] text-white'
-              : 'btn-3d-pearl border-[#EBCAD6] text-[#351427]'
+              ? 'btn-3d-rose border-[#6B2D3C] text-[#F5EDE4]'
+              : 'btn-3d-pearl border-[#DEC9BF] text-[#6B2D3C]'
           }`}
         >
-          <Sparkles className="w-4 h-4 shrink-0 text-[#D63B72]" />
+          <SalonBoardIcon name="nail-file" className="w-4 h-4 shrink-0" />
           <span className="truncate">سوهان</span>
-          <span className="tabular-nums opacity-80">({toFaDigits(boosters['precision-file'])})</span>
+          <span className="font-display tabular-nums opacity-80">
+            ({toFaDigits(boosters['precision-file'])})
+          </span>
         </button>
 
         <button
@@ -1164,52 +1807,56 @@ export const MatchBoardView: React.FC<MatchBoardViewProps> = ({
             )
           }
           disabled={isBusy || boosters['uv-brush'] <= 0}
-          className={`flex-1 min-h-[50px] px-2.5 py-2 rounded-2xl border text-xs font-bold flex items-center justify-center gap-1.5 transition-all disabled:opacity-45 ${
+          className={`min-h-[46px] px-2 py-1.5 rounded-[12px] border text-[11px] sm:text-xs font-bold flex items-center justify-center gap-1 disabled:opacity-45 ${
             activeBooster === 'uv-brush'
-              ? 'bg-[#7C4DFF] border-[#5B21B6] text-white'
-              : 'btn-3d-pearl border-[#EBCAD6] text-[#351427]'
+              ? 'btn-3d-rose border-[#6B2D3C] text-[#F5EDE4]'
+              : 'btn-3d-pearl border-[#DEC9BF] text-[#6B2D3C]'
           }`}
         >
-          <Wand2 className="w-4 h-4 shrink-0 text-[#7C4DFF]" />
-          <span className="truncate">قلم‌موی UV</span>
-          <span className="tabular-nums opacity-80">({toFaDigits(boosters['uv-brush'])})</span>
+          <SalonBoardIcon name="uv-brush" className="w-4 h-4 shrink-0" />
+          <span className="truncate">قلم UV</span>
+          <span className="font-display tabular-nums opacity-80">
+            ({toFaDigits(boosters['uv-brush'])})
+          </span>
         </button>
 
         <button
           type="button"
           onClick={handleShuffleBooster}
           disabled={isBusy || boosters['salon-shuffle'] <= 0}
-          className="flex-1 min-h-[50px] px-2.5 py-2 rounded-2xl btn-3d-pearl border border-[#EBCAD6] text-[#351427] text-xs font-bold flex items-center justify-center gap-1.5 transition-all disabled:opacity-45"
+          className="min-h-[46px] px-2 py-1.5 rounded-[12px] btn-3d-pearl border border-[#DEC9BF] text-[#6B2D3C] text-[11px] sm:text-xs font-bold flex items-center justify-center gap-1 disabled:opacity-45"
         >
-          <Shuffle className="w-4 h-4 shrink-0 text-[#199473]" />
-          <span className="truncate">گردباد</span>
-          <span className="tabular-nums opacity-80">({toFaDigits(boosters['salon-shuffle'])})</span>
+          <SalonBoardIcon name="shuffle" className="w-4 h-4 shrink-0 text-[#73936B]" />
+          <span className="truncate">چیدمان</span>
+          <span className="font-display tabular-nums opacity-80">
+            ({toFaDigits(boosters['salon-shuffle'])})
+          </span>
         </button>
 
         <button
           type="button"
           onClick={handleHintClick}
           disabled={isBusy}
-          className="min-h-[50px] px-3.5 py-2 rounded-2xl btn-3d-pearl border border-[#EBCAD6] text-[#351427] text-xs font-bold flex items-center justify-center gap-1.5 shrink-0"
+          className="min-h-[46px] px-2 py-1.5 rounded-[12px] btn-3d-pearl border border-[#DEC9BF] text-[#6B2D3C] text-[11px] sm:text-xs font-bold flex items-center justify-center gap-1 disabled:opacity-45"
         >
-          <Lightbulb className="w-4 h-4 text-[#D49E2A]" />
-          <span className="hidden sm:inline">راهنما</span>
+          <SalonBoardIcon name="hint" className="w-4 h-4 shrink-0 text-[#B76E79]" />
+          <span className="truncate">راهنما</span>
         </button>
       </footer>
 
       {/* Pause Modal */}
       {modalState === 'PAUSED' && (
         <div
-          className="fixed inset-0 z-50 bg-[#230E18]/55 flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 bg-[#4B1C27]/45 flex items-center justify-center p-4"
           role="dialog"
           aria-modal="true"
           aria-label="توقف بازی"
         >
-          <div className="w-full max-w-sm rounded-3xl surface-25d border border-[#EBCAD6] p-6 text-center">
-            <h2 className="font-display text-2xl font-bold text-[#351427]">
+          <div className="w-full max-w-sm rounded-[20px] surface-25d border border-[#DEC9BF] p-6 text-center">
+            <h2 className="font-display text-2xl font-bold text-[#6B2D3C]">
               استراحت سالن
             </h2>
-            <p className="mt-1 text-sm text-[#6C3B53]">
+            <p className="mt-1 text-sm text-[#944E59]">
               مرحله {toFaDigits(level.id)} · {level.title}
             </p>
 
@@ -1217,25 +1864,25 @@ export const MatchBoardView: React.FC<MatchBoardViewProps> = ({
               <button
                 type="button"
                 onClick={() => setModalState('NONE')}
-                className="w-full min-h-[48px] rounded-2xl btn-3d-rose text-white font-bold text-sm flex items-center justify-center gap-2"
+                className="w-full min-h-[46px] rounded-[12px] btn-3d-rose text-[#F5EDE4] font-bold text-sm flex items-center justify-center gap-2"
               >
-                <Play className="w-4 h-4 fill-current rotate-180" />
+                <SalonBoardIcon name="play" className="w-4 h-4 rotate-180" />
                 <span>ادامه بازی</span>
               </button>
               <button
                 type="button"
                 onClick={resetLevelState}
-                className="w-full min-h-[48px] rounded-2xl btn-3d-pearl border border-[#E4BCCB] text-[#351427] font-bold text-sm flex items-center justify-center gap-2"
+                className="w-full min-h-[46px] rounded-[12px] btn-3d-pearl border border-[#DEC9BF] text-[#6B2D3C] font-bold text-sm flex items-center justify-center gap-2"
               >
-                <RotateCcw className="w-4 h-4" />
+                <SalonBoardIcon name="replay" className="w-4 h-4" />
                 <span>شروع مجدد مرحله</span>
               </button>
               <button
                 type="button"
                 onClick={onExitToMap}
-                className="w-full min-h-[48px] rounded-2xl btn-3d-pearl border border-[#EBCAD6] text-[#5E354A] font-bold text-sm flex items-center justify-center gap-2"
+                className="w-full min-h-[46px] rounded-[12px] btn-3d-pearl border border-[#DEC9BF] text-[#944E59] font-bold text-sm flex items-center justify-center gap-2"
               >
-                <ArrowRight className="w-4 h-4" />
+                <SalonBoardIcon name="back-map" className="w-4 h-4" />
                 <span>بازگشت به نقشه سالن</span>
               </button>
             </div>
@@ -1246,35 +1893,33 @@ export const MatchBoardView: React.FC<MatchBoardViewProps> = ({
       {/* Victory Modal */}
       {modalState === 'VICTORY' && victoryDrop && (
         <div
-          className="fixed inset-0 z-50 bg-[#230E18]/55 flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 bg-[#4B1C27]/45 flex items-center justify-center p-4"
           role="dialog"
           aria-modal="true"
           aria-label="مرحله با موفقیت انجام شد"
         >
-          <div className="w-full max-w-md rounded-3xl surface-25d border border-[#EBCAD6] p-6 text-center">
+          <div className="w-full max-w-md rounded-[20px] surface-25d border border-[#DEC9BF] p-6 text-center">
             <div className="flex items-center justify-center gap-2 mb-3">
               {[1, 2, 3].map((s) => (
-                <Star
+                <SalonBoardIcon
                   key={s}
-                  className={`w-10 h-10 drop-shadow-sm ${
-                    s <= victoryDrop.stars
-                      ? 'fill-[#F5B922] text-[#B45309]'
-                      : 'text-[#E6D4DB]'
-                  }`}
+                  name="star"
+                  filled={s <= victoryDrop.stars}
+                  className={`w-9 h-9 ${s <= victoryDrop.stars ? '' : 'opacity-45'}`}
                 />
               ))}
             </div>
 
-            <h2 className="font-display text-3xl font-bold text-[#351427]">
+            <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#6B2D3C]">
               {isBattleMode ? 'چالش نبرد تکمیل شد!' : 'مانیکور درخشان شد!'}
             </h2>
-            <p className="mt-1.5 text-sm text-[#6C3B53] tabular-nums">
+            <p className="mt-1.5 text-sm text-[#944E59] font-display tabular-nums">
               امتیاز نهایی: {formatFaNumber(score)} · پاداش: {formatFaNumber(victoryDrop.coinsEarned)} سکه
             </p>
 
             {victoryDrop.cardReward && (
-              <div className="mt-5 rounded-2xl bg-[#FDF1F5] border border-[#EBCAD6] p-4 text-right">
-                <div className="flex items-center justify-between text-xs font-bold text-[#9A2353] mb-2">
+              <div className="mt-5 rounded-[14px] bg-[#FAF6F0] border border-[#DEC9BF] p-4 text-right">
+                <div className="flex items-center justify-between text-xs font-bold text-[#944E59] mb-2">
                   <span>
                     {victoryDrop.cardReward.isNew
                       ? 'کارت طراحی ناخن جدید باز شد!'
@@ -1289,10 +1934,10 @@ export const MatchBoardView: React.FC<MatchBoardViewProps> = ({
                     className="w-24 h-18 shrink-0"
                   />
                   <div className="min-w-0">
-                    <p className="font-display font-bold text-base text-[#351427] truncate">
+                    <p className="font-display font-bold text-base text-[#6B2D3C] truncate">
                       {victoryDrop.cardReward.card.title}
                     </p>
-                    <p className="mt-1 text-xs text-[#5E354A] line-clamp-2">
+                    <p className="mt-1 text-xs text-[#944E59] line-clamp-2">
                       {victoryDrop.cardReward.card.description}
                     </p>
                   </div>
@@ -1305,24 +1950,24 @@ export const MatchBoardView: React.FC<MatchBoardViewProps> = ({
                 <button
                   type="button"
                   onClick={onNextLevel}
-                  className="flex-1 min-h-[48px] px-5 rounded-2xl btn-3d-rose text-white font-bold text-sm flex items-center justify-center gap-2"
+                  className="flex-1 min-h-[46px] px-5 rounded-[12px] btn-3d-rose text-[#F5EDE4] font-bold text-sm flex items-center justify-center gap-2"
                 >
-                  <Play className="w-4 h-4 fill-current rotate-180" />
+                  <SalonBoardIcon name="play" className="w-4 h-4 rotate-180" />
                   <span>مرحله بعدی</span>
                 </button>
               )}
               <button
                 type="button"
                 onClick={resetLevelState}
-                className="flex-1 min-h-[48px] px-4 rounded-2xl btn-3d-pearl border border-[#E4BCCB] text-[#351427] font-bold text-sm flex items-center justify-center gap-2"
+                className="flex-1 min-h-[46px] px-4 rounded-[12px] btn-3d-pearl border border-[#DEC9BF] text-[#6B2D3C] font-bold text-sm flex items-center justify-center gap-2"
               >
-                <RotateCcw className="w-4 h-4" />
+                <SalonBoardIcon name="replay" className="w-4 h-4" />
                 <span>تکرار</span>
               </button>
               <button
                 type="button"
                 onClick={onExitToMap}
-                className="flex-1 min-h-[48px] px-4 rounded-2xl btn-3d-pearl border border-[#EBCAD6] text-[#5E354A] font-bold text-sm flex items-center justify-center gap-2"
+                className="flex-1 min-h-[46px] px-4 rounded-[12px] btn-3d-pearl border border-[#DEC9BF] text-[#944E59] font-bold text-sm flex items-center justify-center gap-2"
               >
                 <span>نقشه سالن</span>
               </button>
@@ -1334,24 +1979,24 @@ export const MatchBoardView: React.FC<MatchBoardViewProps> = ({
       {/* Out of Moves Modal */}
       {modalState === 'OUT_OF_MOVES' && !allObjectivesComplete && (
         <div
-          className="fixed inset-0 z-50 bg-[#230E18]/55 flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 bg-[#4B1C27]/45 flex items-center justify-center p-4"
           role="dialog"
           aria-modal="true"
           aria-label="پایان حرکت‌ها"
         >
-          <div className="w-full max-w-sm rounded-3xl surface-25d border border-[#EBCAD6] p-6 text-center">
-            <h2 className="font-display text-2xl font-bold text-[#351427]">
+          <div className="w-full max-w-sm rounded-[20px] surface-25d border border-[#DEC9BF] p-6 text-center">
+            <h2 className="font-display text-2xl font-bold text-[#6B2D3C]">
               حرکت‌ها تمام شد
             </h2>
-            <p className="mt-1 text-sm text-[#6C3B53]">
+            <p className="mt-1 text-sm text-[#944E59]">
               فقط کمی تا تکمیل سفارش سالن مانده! می‌توانید ۵ حرکت اضافه بگیرید یا از اول شروع کنید.
             </p>
 
-            <div className="mt-4 space-y-1.5 text-right rounded-2xl bg-[#FDF1F5] p-3.5 text-xs border border-[#F0D4DE]">
+            <div className="mt-4 space-y-1.5 text-right rounded-[14px] bg-[#FAF6F0] p-3.5 text-xs border border-[#DEC9BF]">
               {objectiveProgress.map((obj) => (
-                <div key={obj.id} className="flex items-center justify-between font-bold">
+                <div key={obj.id} className="flex items-center justify-between font-bold text-[#6B2D3C]">
                   <span>{obj.label}</span>
-                  <span className="tabular-nums">
+                  <span className="font-display tabular-nums">
                     {toFaDigits(obj.current)}/{toFaDigits(obj.target)}
                   </span>
                 </div>
@@ -1363,23 +2008,23 @@ export const MatchBoardView: React.FC<MatchBoardViewProps> = ({
                 type="button"
                 onClick={handleBuyMoreMoves}
                 disabled={coins < 60}
-                className="w-full min-h-[48px] rounded-2xl btn-3d-rose disabled:opacity-45 text-white font-bold text-sm flex items-center justify-center gap-2"
+                className="w-full min-h-[46px] rounded-[12px] btn-3d-rose disabled:opacity-45 text-[#F5EDE4] font-bold text-sm flex items-center justify-center gap-2"
               >
-                <Coins className="w-4 h-4" />
+                <SalonBoardIcon name="coin" className="w-4 h-4" />
                 <span>+۵ حرکت اضافه با ۶۰ سکه</span>
               </button>
               <button
                 type="button"
                 onClick={resetLevelState}
-                className="w-full min-h-[48px] rounded-2xl btn-3d-pearl border border-[#E4BCCB] text-[#351427] font-bold text-sm flex items-center justify-center gap-2"
+                className="w-full min-h-[46px] rounded-[12px] btn-3d-pearl border border-[#DEC9BF] text-[#6B2D3C] font-bold text-sm flex items-center justify-center gap-2"
               >
-                <RotateCcw className="w-4 h-4" />
+                <SalonBoardIcon name="replay" className="w-4 h-4" />
                 <span>تلاش دوباره</span>
               </button>
               <button
                 type="button"
                 onClick={onExitToMap}
-                className="w-full min-h-[48px] rounded-2xl btn-3d-pearl border border-[#EBCAD6] text-[#5E354A] font-bold text-sm"
+                className="w-full min-h-[46px] rounded-[12px] btn-3d-pearl border border-[#DEC9BF] text-[#944E59] font-bold text-sm"
               >
                 بازگشت به نقشه سالن
               </button>
